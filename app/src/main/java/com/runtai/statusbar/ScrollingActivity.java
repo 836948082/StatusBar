@@ -1,11 +1,14 @@
 package com.runtai.statusbar;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 public class ScrollingActivity extends AppCompatActivity {
@@ -46,6 +49,25 @@ public class ScrollingActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //            /** 透明导航栏 */  //如果设置了这里，则导航栏覆盖在页面之上，影响页面操作
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
+
+        /**
+         * 如果手机导航栏是虚拟按键并且是Android6.0系统,则设置去掉状态栏深色背景
+         */
+        if (MainActivity.getNavigationBarHeight(this) == 0) {
+            //6.0版本(设置状态栏和导航栏在6.0系统上全透明)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.TRANSPARENT);//设置状态栏在6.0系统上全透明
+//            window.setNavigationBarColor(Color.TRANSPARENT);//设置导航栏在6.0系统上全透明
+                window.setNavigationBarColor(getColor(R.color.translucent));//半透明
+            }
         }
     }
 
